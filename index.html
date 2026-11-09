@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#171717">
+  <title>Mon Budget</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div><div class="eyebrow">GESTION FINANCIÈRE PERSONNELLE</div><h1>Mon <span>Budget</span></h1></div>
+      <button id="themeToggle" class="icon-btn" aria-label="Changer le thème" title="Changer le thème">☼</button>
+    </header>
+
+    <nav class="tabs" aria-label="Navigation">
+      <button class="tab active" data-view="dashboard">Vue générale</button>
+      <button class="tab" data-view="operations">Opérations</button>
+      <button class="tab" data-view="accounts">Comptes</button>
+      <button class="tab" data-view="reports">Statistiques</button>
+      <button class="tab" data-view="settings">Paramètres</button>
+    </nav>
+
+    <main>
+      <section id="dashboard" class="view active">
+        <div class="section-head"><div><div class="eyebrow">VOTRE SITUATION</div><h2>Tableau de bord</h2></div><input id="monthFilter" type="month" aria-label="Mois affiché"></div>
+        <div class="balance-card">
+          <div class="eyebrow">SOLDE TOTAL DES COMPTES</div>
+          <div class="big-number" id="totalBalance">0</div>
+          <div class="balance-note" id="totalBalanceNote">...</div>
+        </div>
+        <div class="summary-grid">
+          <article class="metric"><div class="metric-label">Revenus du mois</div><div class="metric-value positive" id="monthIncome">0</div></article>
+          <article class="metric"><div class="metric-label">Dépenses du mois</div><div class="metric-value negative" id="monthExpense">0</div></article>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><div class="eyebrow">RÉPARTITION</div><h3>Dépenses par catégorie</h3></div><span class="muted" id="categoryTotal">0</span></div>
+          <div id="categoryBars" class="bars"><p class="empty">Aucune dépense pour ce mois.</p></div>
+          <div class="chart-foot"><span>Montant (et plafond éventuel)</span><span>Part des dépenses globales</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><div class="eyebrow">ÉVOLUTION</div><h3>Comparaison mensuelle</h3></div><span class="muted">6 derniers mois</span></div>
+          <div id="monthlyBars" class="monthly-bars"><p class="empty">Aucune donnée disponible.</p></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Mes comptes</h3><button class="text-btn" data-goto="accounts">Gérer</button></div>
+          <div id="accountSummary" class="account-list"></div>
+        </div>
+        <div class="quick-actions">
+          <button class="action-btn expense-action" data-new="expense"><b>−</b> Ajouter une dépense</button>
+          <button class="action-btn income-action" data-new="income"><b>+</b> Ajouter un revenu</button>
+          <button class="action-btn transfer-action" data-new="transfer"><b>⇄</b> Transférer</button>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Dernières opérations</h3><button class="text-btn" data-goto="operations">Tout voir</button></div>
+          <div id="recentOperations" class="operation-list"><p class="empty">Aucune opération enregistrée.</p></div>
+        </div>
+      </section>
+
+      <section id="operations" class="view">
+        <div class="section-head"><div><div class="eyebrow">HISTORIQUE</div><h2>Opérations</h2></div><button class="gold-btn" data-new="expense">＋ Ajouter</button></div>
+        <div class="filters"><input id="operationSearch" type="search" placeholder="Rechercher une opération…"><select id="typeFilter"><option value="all">Tous les types</option><option value="expense">Dépenses</option><option value="income">Revenus</option><option value="transfer">Transferts</option></select></div>
+        <div class="panel"><div id="allOperations" class="operation-list"><p class="empty">Aucune opération enregistrée.</p></div></div>
+      </section>
+
+      <section id="accounts" class="view">
+        <div class="section-head"><div><div class="eyebrow">VOTRE ARGENT</div><h2>Comptes</h2></div></div>
+        <p class="muted intro">Saisissez le solde réellement disponible dans chaque compte. Ces montants seront vos soldes de départ.</p>
+        <div id="accountCards" class="account-cards"></div>
+        <div class="panel"><h3>Modifier les soldes initiaux</h3><p class="muted small">À utiliser lors de la configuration initiale. Une modification ultérieure ajuste le point de départ du compte.</p><form id="openingForm" class="form-grid"></form></div>
+      </section>
+
+      <section id="reports" class="view">
+        <div class="section-head"><div><div class="eyebrow">ANALYSE</div><h2>Statistiques</h2></div><input id="reportMonth" type="month" aria-label="Mois des statistiques"></div>
+        <div class="panel"><h3>Part de chaque catégorie</h3><p class="muted small">Chaque pourcentage est calculé par rapport au total des dépenses du mois sélectionné.</p><div id="reportCategories" class="bars"></div></div>
+        <div class="panel"><h3>Évolution des dépenses</h3><div id="reportMonthly" class="monthly-bars"></div></div>
+      </section>
+
+      <section id="settings" class="view">
+        <div class="section-head"><div><div class="eyebrow">PRÉFÉRENCES</div><h2>Paramètres</h2></div></div>
+        <div class="panel settings-panel">
+          <h3>Devise</h3>
+          <p class="muted small">Choisissez la monnaie d'affichage.</p>
+          <select id="currencySelect" style="max-width:200px; margin-top:8px;">
+            <option value="DZD">Dinar algérien (DA)</option>
+            <option value="EUR">Euro (€)</option>
+            <option value="USD">Dollar ($)</option>
+            <option value="CAD">Dollar canadien ($)</option>
+            <option value="MAD">Dirham marocain (MAD)</option>
+            <option value="TND">Dinar tunisien (DT)</option>
+          </select>
+          <hr>
+          
+          <h3>Comptes bancaires et portefeuilles</h3>
+          <p class="muted small">Gérez la liste de vos comptes.</p>
+          <div id="accList" class="badge-list"></div>
+          <div class="flex-row">
+            <input id="newAccInput" placeholder="Nouveau compte..." maxlength="15">
+            <button id="addAccBtn" class="outline-btn">Ajouter</button>
+          </div>
+          <hr>
+
+          <h3>Catégories de dépenses</h3>
+          <p class="muted small">Gérez la liste de vos catégories pour les rapports.</p>
+          <div id="catList" class="badge-list"></div>
+          <div class="flex-row">
+            <input id="newCatInput" placeholder="Nouvelle catégorie..." maxlength="20">
+            <button id="addCatBtn" class="outline-btn">Ajouter</button>
+          </div>
+          <hr>
+
+          <h3>Plafonds & Alertes (Optionnel)</h3>
+          <p class="muted small">Définissez des limites (0 = pas de limite). Une alerte s'affichera lors de l'ajout d'une dépense en cas de dépassement.</p>
+          <label style="margin-top:12px">Plafond mensuel global<input type="number" id="globalLimit" min="0" step="1"></label>
+          <div id="catLimitsList" class="form-grid" style="margin-top:12px;"></div>
+          <hr>
+
+          <h3>Sauvegarde des données</h3>
+          <p class="muted small">Les données restent sur cet appareil. Exportez régulièrement une copie de sécurité.</p>
+          <div class="button-row">
+            <button class="gold-btn" id="exportBtn">Exporter une sauvegarde</button>
+            <label class="outline-btn file-label">Importer une sauvegarde<input id="importFile" type="file" accept="application/json"></label>
+            <button class="outline-btn" id="exportExcelBtn" style="color:var(--green);border-color:var(--green)">Exporter en Excel (.csv)</button>
+          </div>
+          <hr>
+          <h3>Confidentialité</h3><p class="muted small">Aucun compte utilisateur ni service financier externe. Les données sont stockées localement dans le navigateur.</p>
+        </div>
+      </section>
+    </main>
+    <footer id="appFooter">MON BUDGET <span>•</span> LOCAL</footer>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <dialog id="confirmDialog">
+    <form method="dialog" style="gap: 20px;">
+      <div class="dialog-head">
+        <div><h2 style="font-size:18px;">Confirmation</h2></div>
+      </div>
+      <p id="confirmMsg" style="margin:0; font-size:14px; font-weight:600;"></p>
+      <div class="dialog-actions">
+        <button type="button" class="outline-btn" id="cancelConfirm">Annuler</button>
+        <button type="button" class="gold-btn" id="okConfirm">Confirmer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="operationDialog">
+    <form id="operationForm" method="dialog">
+      <div class="dialog-head"><div><div class="eyebrow">NOUVELLE OPÉRATION</div><h2 id="dialogTitle">Ajouter une dépense</h2></div><button type="button" class="icon-btn" id="closeDialog">×</button></div>
+      <input type="hidden" id="opType" value="expense">
+      <label>Montant<input id="opAmount" type="number" min="0.01" step="0.01" placeholder="Ex. 2500" required></label>
+      <label>Compte<select id="opAccount" required></select></label>
+      <div id="categoryField"><label>Catégorie<select id="opCategory" required></select></label></div>
+      <div id="transferField" class="hidden"><label>Compte destinataire<select id="opDestination"></select></label></div>
+      <label>Date<input id="opDate" type="date" required></label>
+      <label>Description (facultative)<input id="opNote" type="text" maxlength="100" placeholder="Ajouter une précision"></label>
+      <div class="dialog-actions"><button type="button" class="outline-btn" id="cancelDialog">Annuler</button><button class="gold-btn" type="submit">Enregistrer</button></div>
+      <p id="formError" class="form-error" role="alert"></p>
+    </form>
+  </dialog>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+MON BUDGET — VERSION 1.2 (Alertes et Export Excel)
+
+Contenu :
+- index.html : interface
+- style.css : design noir et doré, thème clair/sombre, alertes
+- app.js : opérations, comptes, plafonds, migration et export Excel
+- manifest.webmanifest et sw.js : installation PWA
+- icon.svg : icône
+
+NOUVEAUTÉS DANS CETTE VERSION (1.2) :
+1. Exportation Excel : Nouveau bouton "Exporter en Excel (.csv)" dans les paramètres.
+2. Plafonds et Alertes : Possibilité de définir des limites mensuelles globales ou par catégorie. 
+   - Une notification "Toast" s'affichera lors de l'ajout si la limite est dépassée.
+   - Les barres de progression sur l'écran d'accueil deviennent rouges en cas de dépassement.
+3. Migration des prénoms : "Enfant1, Enfant2, Enfant3" ont été automatiquement remplacés par "Houssam, Safa, Maroua" dans l'historique et la liste des catégories.

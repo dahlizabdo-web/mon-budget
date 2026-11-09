@@ -1,0 +1,10 @@
+{
+  "name": "Mon Budget",
+  "short_name": "Mon Budget",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#111211",
+  "theme_color": "#171717",
+  "description": "Gestion financière personnelle hors ligne",
+  "icons": [{"src": "icon.svg","sizes": "any","type": "image/svg+xml","purpose": "any maskable"}]
+}
